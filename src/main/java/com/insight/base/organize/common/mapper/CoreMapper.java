@@ -2,6 +2,7 @@ package com.insight.base.organize.common.mapper;
 
 import com.insight.util.common.JsonTypeHandler;
 import com.insight.util.pojo.Log;
+import com.insight.util.pojo.Organize;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -13,6 +14,15 @@ import java.util.List;
  */
 @Mapper
 public interface CoreMapper {
+
+    /**
+     * 新增组织机构
+     *
+     * @param organize 组织机构DTO
+     */
+    @Insert("insert ibo_organize(id, tenant_id, parent_id, type, `index`, code, `name`, alias, full_name, remark, is_invalid, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{parentId}, #{type}, #{index}, #{code}, #{name}, #{alias}, #{fullName}, #{remark}, #{isInvalid}, #{creator}, #{creatorId}, #{createdTime});")
+    void addOrganize(Organize organize);
 
     /**
      * 记录操作日志

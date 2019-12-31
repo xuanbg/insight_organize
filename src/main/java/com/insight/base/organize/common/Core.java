@@ -4,6 +4,7 @@ import com.insight.base.organize.common.mapper.CoreMapper;
 import com.insight.util.pojo.Log;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.OperateType;
+import com.insight.util.pojo.Organize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -34,6 +35,18 @@ public class Core {
     }
 
     /**
+     * 新增组织机构
+     *
+     * @param dto 组织机构DTO
+     */
+    public void addOrganize(Organize dto) {
+        dto.setInvalid(false);
+        dto.setCreatedTime(LocalDateTime.now());
+
+        mapper.addOrganize(dto);
+    }
+
+    /**
      * 记录操作日志
      *
      * @param info     用户关键信息
@@ -46,6 +59,7 @@ public class Core {
     public void writeLog(LoginInfo info, OperateType type, String business, String id, Object content) {
         Log log = new Log();
         log.setId(uuid());
+        log.setTenantId(info.getTenantId());
         log.setType(type);
         log.setBusiness(business);
         log.setBusinessId(id);

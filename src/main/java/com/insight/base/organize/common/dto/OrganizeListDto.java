@@ -6,36 +6,51 @@ import java.io.Serializable;
 
 /**
  * @author 宣炳刚
- * @date 2019/12/6
- * @remark 角色成员DTO
+ * @date 2019/12/4
+ * @remark 角色列表DTO
  */
-public class FuncPermitDto implements Serializable {
+public class OrganizeListDto implements Serializable {
     private static final long serialVersionUID = -1L;
 
     /**
-     * 资源ID
+     * 组织机构ID
      */
     private String id;
 
     /**
-     * 资源父ID
+     * 父级ID
      */
     private String parentId;
 
     /**
-     * 排序字段
+     * 节点类型:0.机构;1.部门;2.职位
+     */
+    private Integer type;
+
+    /**
+     * 序号
      */
     private Integer index;
 
     /**
-     * 资源名称
+     * 编码
+     */
+    private String code;
+
+    /**
+     * 名称
      */
     private String name;
 
     /**
-     * 授权类型:0.拒绝;1.允许
+     * 简称
      */
-    private Boolean permit;
+    private String alias;
+
+    /**
+     * 全称
+     */
+    private String fullName;
 
     public String getId() {
         return id;
@@ -53,12 +68,28 @@ public class FuncPermitDto implements Serializable {
         this.parentId = parentId;
     }
 
+    public Integer getType() {
+        return type;
+    }
+
+    public void setType(Integer type) {
+        this.type = type;
+    }
+
     public Integer getIndex() {
         return index;
     }
 
     public void setIndex(Integer index) {
         this.index = index;
+    }
+
+    public String getCode() {
+        return code;
+    }
+
+    public void setCode(String code) {
+        this.code = code;
     }
 
     public String getName() {
@@ -69,12 +100,20 @@ public class FuncPermitDto implements Serializable {
         this.name = name;
     }
 
-    public Boolean getPermit() {
-        return permit;
+    public String getAlias() {
+        return alias;
     }
 
-    public void setPermit(Boolean permit) {
-        this.permit = permit;
+    public void setAlias(String alias) {
+        this.alias = alias;
+    }
+
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
 
     @Override

@@ -1,6 +1,6 @@
 package com.insight.base.organize.common;
 
-import com.insight.util.pojo.RoleDto;
+import com.insight.util.pojo.Organize;
 import org.springframework.amqp.rabbit.annotation.RabbitHandler;
 import org.springframework.amqp.rabbit.annotation.RabbitListener;
 import org.springframework.stereotype.Component;
@@ -24,12 +24,13 @@ public class Listener {
     }
 
     /**
-     * 从队列订阅新增用户消息
+     * 从队列订阅新增组织机构消息
      *
      * @param dto 队列消息
      */
     @RabbitHandler
-    @RabbitListener(queues = "insight.role")
-    public void receiveRole(RoleDto dto) {
+    @RabbitListener(queues = "insight.organize")
+    public void receiveOrganize(Organize dto) {
+        core.addOrganize(dto);
     }
 }
