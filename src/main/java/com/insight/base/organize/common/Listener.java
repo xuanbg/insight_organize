@@ -1,9 +1,9 @@
 package com.insight.base.organize.common;
 
+import com.insight.base.organize.common.config.QueueConfig;
 import com.insight.util.Json;
 import com.insight.util.pojo.Organize;
 import com.rabbitmq.client.Channel;
-import com.rabbitmq.client.MessageProperties;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.amqp.core.Message;
@@ -43,13 +43,12 @@ public class Listener {
         long tag = message.getMessageProperties().getDeliveryTag();
         try {
             core.addOrganize(dto);
-            channel.basicAck(tag, false);
         } catch (Exception ex) {
-            channel.basicAck(tag, false);
             logger.error("发生异常: {}", ex.getMessage());
 
-            channel.basicPublish(message.getMessageProperties().getReceivedExchange(), message.getMessageProperties().getReceivedRoutingKey(),
-                    MessageProperties.PERSISTENT_TEXT_PLAIN, Json.toJson(dto).getBytes());
+            channel.basicPublish(QueueConfig.DELAY_EXCHANGE_NAME, QueueConfig.DELAY_QUEUE_NAME, null, Json.toJson(dto).getBytes());
+        } finally {
+            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         }
     }
 }
