@@ -1,8 +1,8 @@
 package com.insight.base.organize.common.mapper;
 
 import com.insight.base.organize.common.dto.MemberUserDto;
+import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
-import com.insight.util.pojo.Organize;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;

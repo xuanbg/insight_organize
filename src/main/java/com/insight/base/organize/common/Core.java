@@ -1,10 +1,10 @@
 package com.insight.base.organize.common;
 
+import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.mapper.CoreMapper;
 import com.insight.util.pojo.Log;
 import com.insight.util.pojo.LoginInfo;
 import com.insight.util.pojo.OperateType;
-import com.insight.util.pojo.Organize;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;

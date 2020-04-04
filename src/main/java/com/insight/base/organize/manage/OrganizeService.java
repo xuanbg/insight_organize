@@ -1,7 +1,7 @@
 package com.insight.base.organize.manage;
 
+import com.insight.base.organize.common.dto.Organize;
 import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.Organize;
 import com.insight.util.pojo.Reply;
 
 import java.util.List;

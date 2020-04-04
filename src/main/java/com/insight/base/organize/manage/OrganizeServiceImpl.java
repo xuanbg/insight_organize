@@ -4,10 +4,14 @@ import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.insight.base.organize.common.Core;
 import com.insight.base.organize.common.dto.MemberUserDto;
+import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
 import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.*;
+import com.insight.util.pojo.Log;
+import com.insight.util.pojo.LoginInfo;
+import com.insight.util.pojo.OperateType;
+import com.insight.util.pojo.Reply;
 import org.springframework.stereotype.Service;
 
 import java.util.List;

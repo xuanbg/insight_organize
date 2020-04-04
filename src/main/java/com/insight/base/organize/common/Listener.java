@@ -1,8 +1,8 @@
 package com.insight.base.organize.common;
 
 import com.insight.base.organize.common.config.QueueConfig;
+import com.insight.base.organize.common.dto.Organize;
 import com.insight.util.Json;
-import com.insight.util.pojo.Organize;
 import com.rabbitmq.client.Channel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
