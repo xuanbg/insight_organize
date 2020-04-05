@@ -7,16 +7,15 @@ import com.insight.base.organize.common.dto.MemberUserDto;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
-import com.insight.util.ReplyHelper;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.OperateType;
-import com.insight.util.pojo.Reply;
+import com.insight.utils.ReplyHelper;
+import com.insight.utils.Util;
+import com.insight.utils.pojo.Log;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.OperateType;
+import com.insight.utils.pojo.Reply;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-
-import static com.insight.util.Generator.uuid;
 
 /**
  * @author 宣炳刚
@@ -82,7 +81,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Reply newOrganize(LoginInfo info, Organize dto) {
-        String id = uuid();
+        String id = Util.uuid();
         dto.setId(id);
         dto.setTenantId(info.getTenantId());
         dto.setCreator(info.getUserName());

@@ -2,9 +2,10 @@ package com.insight.base.organize.common;
 
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.mapper.CoreMapper;
-import com.insight.util.pojo.Log;
-import com.insight.util.pojo.LoginInfo;
-import com.insight.util.pojo.OperateType;
+import com.insight.utils.Util;
+import com.insight.utils.pojo.Log;
+import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.pojo.OperateType;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.scheduling.annotation.Async;
@@ -12,8 +13,6 @@ import org.springframework.stereotype.Component;
 
 import java.time.LocalDateTime;
 import java.util.List;
-
-import static com.insight.util.Generator.uuid;
 
 /**
  * @author 宣炳刚
@@ -58,7 +57,7 @@ public class Core {
     @Async
     public void writeLog(LoginInfo info, OperateType type, String business, String id, Object content) {
         Log log = new Log();
-        log.setId(uuid());
+        log.setId(Util.uuid());
         log.setTenantId(info.getTenantId());
         log.setType(type);
         log.setBusiness(business);
