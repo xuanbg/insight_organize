@@ -3,13 +3,14 @@ package com.insight.base.organize.manage;
 import com.github.pagehelper.PageHelper;
 import com.github.pagehelper.PageInfo;
 import com.insight.base.organize.common.Core;
+import com.insight.base.organize.common.client.LogClient;
+import com.insight.base.organize.common.client.LogServiceClient;
 import com.insight.base.organize.common.dto.MemberUserDto;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.Util;
-import com.insight.utils.pojo.Log;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.Reply;
@@ -24,17 +25,21 @@ import java.util.List;
  */
 @Service
 public class OrganizeServiceImpl implements OrganizeService {
+    private static final String BUSINESS = "组织机构管理";
     private final OrganizeMapper mapper;
+    private final LogServiceClient client;
     private final Core core;
 
     /**
      * 构造方法
      *
      * @param mapper RoleMapper
+     * @param client LogServiceClient
      * @param core   Core
      */
-    public OrganizeServiceImpl(OrganizeMapper mapper, Core core) {
+    public OrganizeServiceImpl(OrganizeMapper mapper, LogServiceClient client, Core core) {
         this.mapper = mapper;
+        this.client = client;
         this.core = core;
     }
 
@@ -88,7 +93,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         dto.setCreatorId(info.getUserId());
 
         core.addOrganize(dto);
-        core.writeLog(info, OperateType.INSERT, "组织机构管理", id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
 
         return ReplyHelper.created(id);
     }
@@ -109,7 +114,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.updateOrganize(dto);
-        core.writeLog(info, OperateType.UPDATE, "组织机构管理", id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
 
         return ReplyHelper.success();
     }
@@ -134,7 +139,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.deleteRole(id);
-        core.writeLog(info, OperateType.DELETE, "组织机构管理", id, organize);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, organize);
 
         return ReplyHelper.success();
     }
@@ -178,7 +183,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.addMembers(id, members);
-        core.writeLog(info, OperateType.INSERT, "组织机构管理", id, members);
+        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, members);
 
         return ReplyHelper.success();
     }
@@ -199,7 +204,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.removeMember(id, members);
-        core.writeLog(info, OperateType.DELETE, "组织机构管理", id, members);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, members);
 
         return ReplyHelper.success();
     }
@@ -215,11 +220,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Reply getOrganizeLogs(String tenantId, String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<Log> logs = core.getLogs(tenantId, "组织机构管理", keyword);
-        PageInfo<Log> pageInfo = new PageInfo<>(logs);
-
-        return ReplyHelper.success(logs, pageInfo.getTotal());
+        return client.getLogs(BUSINESS, keyword, page, size);
     }
 
     /**
@@ -230,11 +231,6 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Reply getOrganizeLog(String id) {
-        Log log = core.getLog(id);
-        if (log == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
-        }
-
-        return ReplyHelper.success(log);
+        return client.getLog(id);
     }
 }
