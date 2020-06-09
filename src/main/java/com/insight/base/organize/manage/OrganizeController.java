@@ -158,18 +158,15 @@ public class OrganizeController {
     /**
      * 获取日志列表
      *
-     * @param info    用户关键信息
      * @param keyword 查询关键词
      * @param page    分页页码
      * @param size    每页记录数
      * @return Reply
      */
     @GetMapping("/v1.0/organizes/logs")
-    public Reply getOrganizeLogs(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
-                                 @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+    public Reply getOrganizeLogs(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
 
-        return service.getOrganizeLogs(loginInfo.getTenantId(), keyword, page, size);
+        return service.getOrganizeLogs(keyword, page, size);
     }
 
     /**
