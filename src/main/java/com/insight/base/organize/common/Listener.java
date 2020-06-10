@@ -47,10 +47,7 @@ public class Listener {
             core.addOrganize(Json.toBean(body, Organize.class));
         } catch (Exception ex) {
             logger.error("发生异常: {}", ex.getMessage());
-
             channel.basicPublish(QueueConfig.DELAY_EXCHANGE_NAME, QueueConfig.DELAY_QUEUE_NAME, null, message.getBody());
-        } finally {
-            channel.basicAck(message.getMessageProperties().getDeliveryTag(), false);
         }
     }
 }
