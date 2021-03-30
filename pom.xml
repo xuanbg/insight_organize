@@ -10,7 +10,7 @@
 	</parent>
 	<groupId>com.insight.base</groupId>
 	<artifactId>organize</artifactId>
-	<version>0.0.1-SNAPSHOT</version>
+	<version>1.0.0-RELEASE</version>
 	<name>Organize</name>
 	<description>Organize project for Spring Boot</description>
 
