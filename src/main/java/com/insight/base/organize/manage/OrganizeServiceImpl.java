@@ -87,7 +87,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Reply newOrganize(LoginInfo info, Organize dto) {
-        Long id = creator.nextId(7);
+        Long id = creator.nextId(6);
         dto.setId(id);
         dto.setTenantId(info.getTenantId());
         dto.setCreator(info.getUserName());
