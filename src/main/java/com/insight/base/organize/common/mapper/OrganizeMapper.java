@@ -81,9 +81,9 @@ public interface OrganizeMapper {
      * @param id      组织机构ID
      * @param members 组织机构成员ID集合
      */
-    @Insert("<script>insert ibo_organize_member (id, post_id, user_id) values " +
+    @Insert("<script>insert ibo_organize_member (post_id, user_id) values " +
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\">" +
-            "(replace(uuid(), '-', ''), #{id}, #{item})</foreach>;</script>")
+            "(#{id}, #{item})</foreach>;</script>")
     void
     addMembers(@Param("id") Long id, @Param("list") List<Long> members);
 
