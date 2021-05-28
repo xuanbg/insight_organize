@@ -3,6 +3,7 @@ package com.insight.base.organize.manage;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 
 import java.util.List;
 
@@ -16,13 +17,10 @@ public interface OrganizeService {
     /**
      * 查询组织机构列表
      *
-     * @param tenantId 租户ID
-     * @param keyword  查询关键词
-     * @param page     分页页码
-     * @param size     每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
-    Reply getOrganizes(String tenantId, String keyword, int page, int size);
+    Reply getOrganizes(SearchDto search);
 
     /**
      * 获取组织机构详情
@@ -30,7 +28,7 @@ public interface OrganizeService {
      * @param id 组织机构ID
      * @return Reply
      */
-    Reply getOrganize(String id);
+    Reply getOrganize(Long id);
 
     /**
      * 新增组织机构
@@ -57,18 +55,16 @@ public interface OrganizeService {
      * @param id   组织机构ID
      * @return Reply
      */
-    Reply deleteOrganize(LoginInfo info, String id);
+    Reply deleteOrganize(LoginInfo info, Long id);
 
     /**
      * 查询组织机构成员用户
      *
-     * @param id      组织机构ID
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param id     组织机构ID
+     * @param search 查询实体类
      * @return Reply
      */
-    Reply getMemberUsers(String id, String keyword, int page, int size);
+    Reply getMemberUsers(Long id, SearchDto search);
 
     /**
      * 添加组织机构成员
@@ -78,7 +74,7 @@ public interface OrganizeService {
      * @param members 组织机构成员ID集合
      * @return Reply
      */
-    Reply addMembers(LoginInfo info, String id, List<String> members);
+    Reply addMembers(LoginInfo info, Long id, List<Long> members);
 
     /**
      * 移除组织机构成员
@@ -88,17 +84,15 @@ public interface OrganizeService {
      * @param members 组织机构成员ID集合
      * @return Reply
      */
-    Reply removeMember(LoginInfo info, String id, List<String> members);
+    Reply removeMember(LoginInfo info, Long id, List<Long> members);
 
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
-    Reply getOrganizeLogs(String keyword, int page, int size);
+    Reply getOrganizeLogs(SearchDto search);
 
     /**
      * 获取日志详情
@@ -106,5 +100,5 @@ public interface OrganizeService {
      * @param id 日志ID
      * @return Reply
      */
-    Reply getOrganizeLog(String id);
+    Reply getOrganizeLog(Long id);
 }

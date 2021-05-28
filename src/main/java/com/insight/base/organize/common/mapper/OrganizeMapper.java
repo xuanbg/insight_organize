@@ -26,7 +26,7 @@ public interface OrganizeMapper {
             "<if test = 'tenantId == null'>tenant_id is null </if>" +
             "<if test = 'key != null'>and (code = #{key} or name like concat('%',#{key},'%')) </if>" +
             "order by type, `index`</script>")
-    List<OrganizeListDto> getOrganizes(@Param("tenantId") String tenantId, @Param("key") String key);
+    List<OrganizeListDto> getOrganizes(@Param("tenantId") Long tenantId, @Param("key") String key);
 
     /**
      * 获取组织机构详情
@@ -35,7 +35,7 @@ public interface OrganizeMapper {
      * @return 组织机构详情
      */
     @Select("select * from ibo_organize where id = #{id};")
-    Organize getOrganize(String id);
+    Organize getOrganize(Long id);
 
     /**
      * 获取下属组织机构数量
@@ -44,7 +44,7 @@ public interface OrganizeMapper {
      * @return 下属组织机构数量
      */
     @Select("select count(*) from ibo_organize where parent_id = #{id};")
-    int getOrganizeCount(String id);
+    int getOrganizeCount(Long id);
 
     /**
      * 更新组织机构
@@ -61,7 +61,7 @@ public interface OrganizeMapper {
      * @param id 组织机构ID
      */
     @Delete("delete o, m from ibo_organize o left join ibo_organize_member m on m.post_id = o.id where o.id = #{id};")
-    void deleteRole(String id);
+    void deleteRole(Long id);
 
     /**
      * 查询组织机构成员用户
@@ -73,7 +73,7 @@ public interface OrganizeMapper {
     @Select("<script>select u.id, u.code, u.name, u.account, u.mobile, u.is_invalid from ibo_organize_member m join ibu_user u on u.id = m.user_id " +
             "<if test = 'key != null'>and (u.code = #{key} or u.account = #{key} or u.name like concat('%',#{key},'%')) </if>" +
             "where m.post_id = #{id} order by u.created_time</script>")
-    List<MemberUserDto> getMemberUsers(@Param("id") String id, @Param("key") String key);
+    List<MemberUserDto> getMemberUsers(@Param("id") Long id, @Param("key") String key);
 
     /**
      * 添加组织机构成员
@@ -85,7 +85,7 @@ public interface OrganizeMapper {
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\">" +
             "(replace(uuid(), '-', ''), #{id}, #{item})</foreach>;</script>")
     void
-    addMembers(@Param("id") String id, @Param("list") List<String> members);
+    addMembers(@Param("id") Long id, @Param("list") List<Long> members);
 
     /**
      * 移除组织机构成员
@@ -95,5 +95,5 @@ public interface OrganizeMapper {
      */
     @Delete("<script>delete from ibo_organize_member where post_id = #{id} and user_id in (" +
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\">#{item}</foreach>);</script>")
-    void removeMember(@Param("id") String id, @Param("list") List<String> members);
+    void removeMember(@Param("id") Long id, @Param("list") List<Long> members);
 }

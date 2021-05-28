@@ -1,26 +1,23 @@
 package com.insight.base.organize.common.dto;
 
-import com.insight.utils.Json;
-
-import java.io.Serializable;
+import com.insight.utils.pojo.BaseXo;
 
 /**
  * @author 宣炳刚
  * @date 2019/12/4
  * @remark 角色列表DTO
  */
-public class OrganizeListDto implements Serializable {
-    private static final long serialVersionUID = -1L;
+public class OrganizeListDto extends BaseXo {
 
     /**
      * 组织机构ID
      */
-    private String id;
+    private Long id;
 
     /**
      * 父级ID
      */
-    private String parentId;
+    private Long parentId;
 
     /**
      * 节点类型:0.机构;1.部门;2.职位
@@ -52,19 +49,19 @@ public class OrganizeListDto implements Serializable {
      */
     private String fullName;
 
-    public String getId() {
+    public Long getId() {
         return id;
     }
 
-    public void setId(String id) {
+    public void setId(Long id) {
         this.id = id;
     }
 
-    public String getParentId() {
+    public Long getParentId() {
         return parentId;
     }
 
-    public void setParentId(String parentId) {
+    public void setParentId(Long parentId) {
         this.parentId = parentId;
     }
 
@@ -114,10 +111,5 @@ public class OrganizeListDto implements Serializable {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
-    }
-
-    @Override
-    public String toString() {
-        return Json.toJson(this);
     }
 }

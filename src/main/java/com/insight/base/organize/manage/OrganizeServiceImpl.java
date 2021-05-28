@@ -10,10 +10,11 @@ import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
 import com.insight.utils.ReplyHelper;
-import com.insight.utils.Util;
+import com.insight.utils.SnowflakeCreator;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -26,6 +27,7 @@ import java.util.List;
 @Service
 public class OrganizeServiceImpl implements OrganizeService {
     private static final String BUSINESS = "组织机构管理";
+    private final SnowflakeCreator creator;
     private final OrganizeMapper mapper;
     private final LogServiceClient client;
     private final Core core;
@@ -33,11 +35,13 @@ public class OrganizeServiceImpl implements OrganizeService {
     /**
      * 构造方法
      *
-     * @param mapper RoleMapper
-     * @param client LogServiceClient
-     * @param core   Core
+     * @param creator 雪花算法ID生成器
+     * @param mapper  RoleMapper
+     * @param client  LogServiceClient
+     * @param core    Core
      */
-    public OrganizeServiceImpl(OrganizeMapper mapper, LogServiceClient client, Core core) {
+    public OrganizeServiceImpl(SnowflakeCreator creator, OrganizeMapper mapper, LogServiceClient client, Core core) {
+        this.creator = creator;
         this.mapper = mapper;
         this.client = client;
         this.core = core;
@@ -46,16 +50,13 @@ public class OrganizeServiceImpl implements OrganizeService {
     /**
      * 查询组织机构列表
      *
-     * @param tenantId 租户ID
-     * @param keyword  查询关键词
-     * @param page     分页页码
-     * @param size     每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @Override
-    public Reply getOrganizes(String tenantId, String keyword, int page, int size) {
-        PageHelper.startPage(page, size);
-        List<OrganizeListDto> organizes = mapper.getOrganizes(tenantId, keyword);
+    public Reply getOrganizes(SearchDto search) {
+        PageHelper.startPage(search.getPage(), search.getSize());
+        List<OrganizeListDto> organizes = mapper.getOrganizes(search.getTenantId(), search.getKeyword());
         PageInfo<OrganizeListDto> pageInfo = new PageInfo<>(organizes);
 
         return ReplyHelper.success(organizes, pageInfo.getTotal());
@@ -68,7 +69,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply getOrganize(String id) {
+    public Reply getOrganize(Long id) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
             return ReplyHelper.fail("ID不存在,未读取数据");
@@ -86,7 +87,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Reply newOrganize(LoginInfo info, Organize dto) {
-        String id = Util.uuid();
+        Long id = creator.nextId(7);
         dto.setId(id);
         dto.setTenantId(info.getTenantId());
         dto.setCreator(info.getUserName());
@@ -107,7 +108,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Reply editOrganize(LoginInfo info, Organize dto) {
-        String id = dto.getId();
+        Long id = dto.getId();
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
@@ -127,7 +128,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply deleteOrganize(LoginInfo info, String id) {
+    public Reply deleteOrganize(LoginInfo info, Long id) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
@@ -147,21 +148,19 @@ public class OrganizeServiceImpl implements OrganizeService {
     /**
      * 查询组织机构成员用户
      *
-     * @param id      组织机构ID
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param id     组织机构ID
+     * @param search 查询实体类
      * @return Reply
      */
     @Override
-    public Reply getMemberUsers(String id, String keyword, int page, int size) {
+    public Reply getMemberUsers(Long id, SearchDto search) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
             return ReplyHelper.fail("ID不存在,未读取数据");
         }
 
-        PageHelper.startPage(page, size);
-        List<MemberUserDto> users = mapper.getMemberUsers(id, keyword);
+        PageHelper.startPage(search.getPage(), search.getSize());
+        List<MemberUserDto> users = mapper.getMemberUsers(id, search.getKeyword());
         PageInfo<MemberUserDto> pageInfo = new PageInfo<>(users);
 
         return ReplyHelper.success(users, pageInfo.getTotal());
@@ -176,7 +175,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply addMembers(LoginInfo info, String id, List<String> members) {
+    public Reply addMembers(LoginInfo info, Long id, List<Long> members) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
             return ReplyHelper.fail("ID不存在,未更新数据");
@@ -197,7 +196,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply removeMember(LoginInfo info, String id, List<String> members) {
+    public Reply removeMember(LoginInfo info, Long id, List<Long> members) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
             return ReplyHelper.fail("ID不存在,未删除数据");
@@ -212,14 +211,12 @@ public class OrganizeServiceImpl implements OrganizeService {
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @Override
-    public Reply getOrganizeLogs(String keyword, int page, int size) {
-        return client.getLogs(BUSINESS, keyword, page, size);
+    public Reply getOrganizeLogs(SearchDto search) {
+        return client.getLogs(BUSINESS, search.getKeyword(), search.getPage(), search.getSize());
     }
 
     /**
@@ -229,7 +226,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply getOrganizeLog(String id) {
+    public Reply getOrganizeLog(Long id) {
         return client.getLog(id);
     }
 }

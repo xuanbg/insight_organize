@@ -5,6 +5,7 @@ import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.pojo.LoginInfo;
 import com.insight.utils.pojo.Reply;
+import com.insight.utils.pojo.SearchDto;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -33,18 +34,16 @@ public class OrganizeController {
     /**
      * 查询组织机构列表
      *
-     * @param info    用户关键信息
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param info   用户关键信息
+     * @param search 查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/organizes")
-    public Reply getOrganizes(@RequestHeader("loginInfo") String info, @RequestParam(required = false) String keyword,
-                              @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+    public Reply getOrganizes(@RequestHeader("loginInfo") String info, SearchDto search) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        search.setTenantId(loginInfo.getTenantId());
 
-        return service.getOrganizes(loginInfo.getTenantId(), keyword, page, size);
+        return service.getOrganizes(search);
     }
 
     /**
@@ -54,8 +53,8 @@ public class OrganizeController {
      * @return Reply
      */
     @GetMapping("/v1.0/organizes/{id}")
-    public Reply getOrganize(@PathVariable String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply getOrganize(@PathVariable Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
@@ -98,7 +97,7 @@ public class OrganizeController {
      * @return Reply
      */
     @DeleteMapping("/v1.0/organizes")
-    public Reply deleteOrganize(@RequestHeader("loginInfo") String info, @RequestBody String id) {
+    public Reply deleteOrganize(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.deleteOrganize(loginInfo, id);
@@ -107,16 +106,13 @@ public class OrganizeController {
     /**
      * 查询组织机构成员用户
      *
-     * @param id      组织机构ID
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param id     组织机构ID
+     * @param search 查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/organizes/{id}/users")
-    public Reply getMemberUsers(@PathVariable String id, @RequestParam(required = false) String keyword,
-                                @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
-        return service.getMemberUsers(id, keyword, page, size);
+    public Reply getMemberUsers(@PathVariable Long id, SearchDto search) {
+        return service.getMemberUsers(id, search);
     }
 
     /**
@@ -128,7 +124,7 @@ public class OrganizeController {
      * @return Reply
      */
     @PostMapping("/v1.0/organizes/{id}/members")
-    public Reply addOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable String id, @RequestBody List<String> members) {
+    public Reply addOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable Long id, @RequestBody List<Long> members) {
         if (members == null || members.isEmpty()) {
             return ReplyHelper.invalidParam("请选择需要添加的成员");
         }
@@ -146,7 +142,7 @@ public class OrganizeController {
      * @return Reply
      */
     @DeleteMapping("/v1.0/organizes/{id}/members")
-    public Reply removeOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable String id, @RequestBody List<String> members) {
+    public Reply removeOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable Long id, @RequestBody List<Long> members) {
         if (members == null || members.isEmpty()) {
             return ReplyHelper.invalidParam("请选择需要移除的成员");
         }
@@ -158,15 +154,13 @@ public class OrganizeController {
     /**
      * 获取日志列表
      *
-     * @param keyword 查询关键词
-     * @param page    分页页码
-     * @param size    每页记录数
+     * @param search 查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/organizes/logs")
-    public Reply getOrganizeLogs(@RequestParam(required = false) String keyword, @RequestParam(defaultValue = "1") int page, @RequestParam(defaultValue = "20") int size) {
+    public Reply getOrganizeLogs(SearchDto search) {
 
-        return service.getOrganizeLogs(keyword, page, size);
+        return service.getOrganizeLogs(search);
     }
 
     /**
@@ -176,8 +170,8 @@ public class OrganizeController {
      * @return Reply
      */
     @GetMapping("/v1.0/organizes/logs/{id}")
-    public Reply getOrganizeLog(@PathVariable String id) {
-        if (id == null || id.isEmpty()) {
+    public Reply getOrganizeLog(@PathVariable Long id) {
+        if (id == null) {
             return ReplyHelper.invalidParam();
         }
 
