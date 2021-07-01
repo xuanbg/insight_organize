@@ -54,10 +54,6 @@ public class OrganizeController {
      */
     @GetMapping("/v1.0/organizes/{id}")
     public Reply getOrganize(@PathVariable Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
         return service.getOrganize(id);
     }
 
@@ -79,12 +75,14 @@ public class OrganizeController {
      * 编辑组织机构
      *
      * @param info 用户关键信息
+     * @param id   组织机构ID
      * @param dto  组织机构DTO
      * @return Reply
      */
-    @PutMapping("/v1.0/organizes")
-    public Reply editOrganize(@RequestHeader("loginInfo") String info, @Valid @RequestBody Organize dto) {
+    @PutMapping("/v1.0/organizes/{id}")
+    public Reply editOrganize(@RequestHeader("loginInfo") String info, @PathVariable Long id, @Valid @RequestBody Organize dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+        dto.setId(id);
 
         return service.editOrganize(loginInfo, dto);
     }
@@ -96,8 +94,8 @@ public class OrganizeController {
      * @param id   组织机构ID
      * @return Reply
      */
-    @DeleteMapping("/v1.0/organizes")
-    public Reply deleteOrganize(@RequestHeader("loginInfo") String info, @RequestBody Long id) {
+    @DeleteMapping("/v1.0/organizes/{id}")
+    public Reply deleteOrganize(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.deleteOrganize(loginInfo, id);
@@ -171,10 +169,6 @@ public class OrganizeController {
      */
     @GetMapping("/v1.0/organizes/logs/{id}")
     public Reply getOrganizeLog(@PathVariable Long id) {
-        if (id == null) {
-            return ReplyHelper.invalidParam();
-        }
-
         return service.getOrganizeLog(id);
     }
 }
