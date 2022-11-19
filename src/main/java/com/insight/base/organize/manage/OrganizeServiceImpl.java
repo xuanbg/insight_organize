@@ -1,11 +1,9 @@
 package com.insight.base.organize.manage;
 
 import com.github.pagehelper.PageHelper;
-import com.github.pagehelper.PageInfo;
 import com.insight.base.organize.common.Core;
 import com.insight.base.organize.common.client.LogClient;
 import com.insight.base.organize.common.client.LogServiceClient;
-import com.insight.base.organize.common.dto.MemberUserDto;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
@@ -167,11 +165,14 @@ public class OrganizeServiceImpl implements OrganizeService {
             return ReplyHelper.fail("ID不存在,未读取数据");
         }
 
-        PageHelper.startPage(search.getPage(), search.getSize());
-        List<MemberUserDto> users = mapper.getMemberUsers(id, search.getKeyword());
-        PageInfo<MemberUserDto> pageInfo = new PageInfo<>(users);
+        search.setId(id);
+        var total = PageHelper.count(() -> mapper.getMemberUsers(search));
+        if (total == 0) {
+            return ReplyHelper.resultIsEmpty();
+        }
 
-        return ReplyHelper.success(users, pageInfo.getTotal());
+        var list = mapper.getMemberUsers(search);
+        return ReplyHelper.success(list, total);
     }
 
     /**

@@ -3,6 +3,7 @@ package com.insight.base.organize.common.mapper;
 import com.insight.base.organize.common.dto.MemberUserDto;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
+import com.insight.utils.pojo.base.Search;
 import com.insight.utils.pojo.base.TreeVo;
 import org.apache.ibatis.annotations.*;
 
@@ -74,14 +75,13 @@ public interface OrganizeMapper {
     /**
      * 查询组织机构成员用户
      *
-     * @param id  组织机构ID
-     * @param key 查询关键词
+     * @param search 查询关键词
      * @return 组织机构成员用户集合
      */
     @Select("<script>select u.id, u.code, u.name, u.account, u.mobile, u.is_invalid from ibo_organize_member m join ibu_user u on u.id = m.user_id " +
-            "<if test = 'key != null'>and (u.code = #{key} or u.account = #{key} or u.name like concat('%',#{key},'%')) </if>" +
+            "<if test = 'keyword != null'>and (u.code = #{keyword} or u.account = #{keyword} or u.name like concat('%',#{keyword},'%')) </if>" +
             "where m.post_id = #{id} order by u.created_time</script>")
-    List<MemberUserDto> getMemberUsers(@Param("id") Long id, @Param("key") String key);
+    List<MemberUserDto> getMemberUsers(Search search);
 
     /**
      * 添加组织机构成员
