@@ -11,10 +11,11 @@ import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.SnowflakeCreator;
-import com.insight.utils.pojo.LoginInfo;
+import com.insight.utils.common.BusinessException;
 import com.insight.utils.pojo.OperateType;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.SearchDto;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,11 +56,18 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Reply getOrganizes(SearchDto search) {
-        PageHelper.startPage(search.getPage(), search.getSize());
-        List<OrganizeListDto> organizes = mapper.getOrganizes(search.getTenantId(), search.getKeyword());
-        PageInfo<OrganizeListDto> pageInfo = new PageInfo<>(organizes);
+        Long id = search.getId();
+        if (id != null) {
+            return ReplyHelper.success(mapper.getSubOrganizes(id));
+        } else {
+            Long tenantId = search.getTenantId();
+            if (tenantId == null) {
+                throw new BusinessException("租户ID不能为空");
+            }
 
-        return ReplyHelper.success(organizes, pageInfo.getTotal());
+            List<OrganizeListDto> organizes = mapper.getOrganizes(tenantId);
+            return ReplyHelper.success(organizes);
+        }
     }
 
     /**

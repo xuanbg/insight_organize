@@ -3,6 +3,7 @@ package com.insight.base.organize.common.mapper;
 import com.insight.base.organize.common.dto.MemberUserDto;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
+import com.insight.utils.pojo.base.TreeVo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -18,15 +19,22 @@ public interface OrganizeMapper {
      * 获取组织机构列表
      *
      * @param tenantId 租户ID
-     * @param key      查询关键词
      * @return 组织机构列表
      */
-    @Select("<script>select id, parent_id, type, `index`, code, name, alias, full_name from ibo_organize where " +
-            "<if test = 'tenantId != null'>tenant_id = #{tenantId} </if>" +
-            "<if test = 'tenantId == null'>tenant_id is null </if>" +
-            "<if test = 'key != null'>and (code = #{key} or name like concat('%',#{key},'%')) </if>" +
-            "order by type, `index`</script>")
-    List<OrganizeListDto> getOrganizes(@Param("tenantId") Long tenantId, @Param("key") String key);
+    @Select("select id, parent_id, type, `index`, code, name, alias, full_name from ibo_organize where " +
+            "tenant_id = #{tenantId} order by type, `index`;")
+    List<OrganizeListDto> getOrganizes(Long tenantId);
+
+    /**
+     * 查询指定ID的机构的下级机构ID
+     *
+     * @param id 组织机构ID
+     * @return 下级机构ID集合
+     */
+    @Select("with recursive orgs as (select o.id, o.parent_id, o.type, o.code, o.name from ibo_organize o where o.id = #{id} " +
+            "union select p.id, p.parent_id, p.type, p.code, p.name from ibo_organize p join orgs s on s.id = p.parent_id) " +
+            "select * from orgs;")
+    List<TreeVo> getSubOrganizes(long id);
 
     /**
      * 获取组织机构详情

@@ -3,9 +3,9 @@ package com.insight.base.organize.manage;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
-import com.insight.utils.pojo.LoginInfo;
-import com.insight.utils.pojo.Reply;
-import com.insight.utils.pojo.SearchDto;
+import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.Reply;
+import com.insight.utils.pojo.base.SearchDto;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
