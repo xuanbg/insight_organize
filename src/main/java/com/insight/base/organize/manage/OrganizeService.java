@@ -3,7 +3,7 @@ package com.insight.base.organize.manage;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
-import com.insight.utils.pojo.base.SearchDto;
+import com.insight.utils.pojo.base.Search;
 
 import java.util.List;
 
@@ -20,7 +20,7 @@ public interface OrganizeService {
      * @param search 查询实体类
      * @return Reply
      */
-    Reply getOrganizes(SearchDto search);
+    Reply getOrganizes(Search search);
 
     /**
      * 获取组织机构详情
@@ -64,7 +64,7 @@ public interface OrganizeService {
      * @param search 查询实体类
      * @return Reply
      */
-    Reply getMemberUsers(Long id, SearchDto search);
+    Reply getMemberUsers(Long id, Search search);
 
     /**
      * 添加组织机构成员
@@ -92,7 +92,7 @@ public interface OrganizeService {
      * @param search 查询实体类
      * @return Reply
      */
-    Reply getOrganizeLogs(SearchDto search);
+    Reply getOrganizeLogs(Search search);
 
     /**
      * 获取日志详情

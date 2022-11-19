@@ -15,7 +15,7 @@ import com.insight.utils.common.BusinessException;
 import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
-import com.insight.utils.pojo.base.SearchDto;
+import com.insight.utils.pojo.base.Search;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -55,7 +55,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply getOrganizes(SearchDto search) {
+    public Reply getOrganizes(Search search) {
         Long id = search.getId();
         if (id != null) {
             return ReplyHelper.success(mapper.getSubOrganizes(id));
@@ -161,7 +161,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply getMemberUsers(Long id, SearchDto search) {
+    public Reply getMemberUsers(Long id, Search search) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
             return ReplyHelper.fail("ID不存在,未读取数据");
@@ -223,7 +223,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply getOrganizeLogs(SearchDto search) {
+    public Reply getOrganizeLogs(Search search) {
         return client.getLogs(BUSINESS, search.getKeyword(), search.getPage(), search.getSize());
     }
 

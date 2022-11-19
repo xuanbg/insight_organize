@@ -5,7 +5,7 @@ import com.insight.utils.Json;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
-import com.insight.utils.pojo.base.SearchDto;
+import com.insight.utils.pojo.base.Search;
 import org.springframework.web.bind.annotation.*;
 
 import javax.validation.Valid;
@@ -39,7 +39,7 @@ public class OrganizeController {
      * @return Reply
      */
     @GetMapping("/v1.0/organizes")
-    public Reply getOrganizes(@RequestHeader("loginInfo") String info, SearchDto search) {
+    public Reply getOrganizes(@RequestHeader("loginInfo") String info, Search search) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
         search.setTenantId(loginInfo.getTenantId());
 
@@ -109,7 +109,7 @@ public class OrganizeController {
      * @return Reply
      */
     @GetMapping("/v1.0/organizes/{id}/users")
-    public Reply getMemberUsers(@PathVariable Long id, SearchDto search) {
+    public Reply getMemberUsers(@PathVariable Long id, Search search) {
         return service.getMemberUsers(id, search);
     }
 
@@ -156,7 +156,7 @@ public class OrganizeController {
      * @return Reply
      */
     @GetMapping("/v1.0/organizes/logs")
-    public Reply getOrganizeLogs(SearchDto search) {
+    public Reply getOrganizeLogs(Search search) {
 
         return service.getOrganizeLogs(search);
     }
