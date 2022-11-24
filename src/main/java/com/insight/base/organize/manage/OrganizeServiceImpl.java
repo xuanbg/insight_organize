@@ -166,13 +166,11 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         search.setId(id);
-        var total = PageHelper.count(() -> mapper.getMemberUsers(search));
-        if (total == 0) {
-            return ReplyHelper.resultIsEmpty();
-        }
+        var page = PageHelper.startPage(search.getPageNum(), search.getPageSize())
+                .setOrderBy(search.getOrderBy()).doSelectPage(() -> mapper.getMemberUsers(search));
 
-        var list = mapper.getMemberUsers(search);
-        return ReplyHelper.success(list, total);
+        var total = page.getTotal();
+        return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
     }
 
     /**
@@ -225,7 +223,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Reply getOrganizeLogs(Search search) {
-        return client.getLogs(BUSINESS, search.getKeyword(), search.getPage(), search.getSize());
+        return client.getLogs(BUSINESS, search.getKeyword(), search.getPageNum(), search.getPageSize());
     }
 
     /**

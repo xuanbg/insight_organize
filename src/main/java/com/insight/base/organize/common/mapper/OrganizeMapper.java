@@ -80,7 +80,7 @@ public interface OrganizeMapper {
      */
     @Select("<script>select u.id, u.code, u.name, u.account, u.mobile, u.is_invalid from ibo_organize_member m join ibu_user u on u.id = m.user_id " +
             "<if test = 'keyword != null'>and (u.code = #{keyword} or u.account = #{keyword} or u.name like concat('%',#{keyword},'%')) </if>" +
-            "where m.post_id = #{id} order by u.created_time</script>")
+            "where m.post_id = #{id}</script>")
     List<MemberUserDto> getMemberUsers(Search search);
 
     /**
