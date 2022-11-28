@@ -1,9 +1,10 @@
 package com.insight.base.organize.manage;
 
 import com.insight.base.organize.common.dto.Organize;
+import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.utils.Json;
-import com.insight.utils.ReplyHelper;
 import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
 import org.springframework.web.bind.annotation.*;
@@ -39,7 +40,7 @@ public class OrganizeController {
      * @return Reply
      */
     @GetMapping("/v1.0/organizes")
-    public Reply getOrganizes(@RequestHeader("loginInfo") String info, Search search) {
+    public List<OrganizeListDto> getOrganizes(@RequestHeader("loginInfo") String info, Search search) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
         search.setTenantId(loginInfo.getTenantId());
 
@@ -53,7 +54,7 @@ public class OrganizeController {
      * @return Reply
      */
     @GetMapping("/v1.0/organizes/{id}")
-    public Reply getOrganize(@PathVariable Long id) {
+    public Organize getOrganize(@PathVariable Long id) {
         return service.getOrganize(id);
     }
 
@@ -65,7 +66,7 @@ public class OrganizeController {
      * @return Reply
      */
     @PostMapping("/v1.0/organizes")
-    public Reply newOrganize(@RequestHeader("loginInfo") String info, @Valid @RequestBody Organize dto) {
+    public Long newOrganize(@RequestHeader("loginInfo") String info, @Valid @RequestBody Organize dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
         return service.newOrganize(loginInfo, dto);
@@ -77,14 +78,13 @@ public class OrganizeController {
      * @param info 用户关键信息
      * @param id   组织机构ID
      * @param dto  组织机构DTO
-     * @return Reply
      */
     @PutMapping("/v1.0/organizes/{id}")
-    public Reply editOrganize(@RequestHeader("loginInfo") String info, @PathVariable Long id, @Valid @RequestBody Organize dto) {
+    public void editOrganize(@RequestHeader("loginInfo") String info, @PathVariable Long id, @Valid @RequestBody Organize dto) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
         dto.setId(id);
 
-        return service.editOrganize(loginInfo, dto);
+        service.editOrganize(loginInfo, dto);
     }
 
     /**
@@ -92,13 +92,12 @@ public class OrganizeController {
      *
      * @param info 用户关键信息
      * @param id   组织机构ID
-     * @return Reply
      */
     @DeleteMapping("/v1.0/organizes/{id}")
-    public Reply deleteOrganize(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
+    public void deleteOrganize(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
 
-        return service.deleteOrganize(loginInfo, id);
+        service.deleteOrganize(loginInfo, id);
     }
 
     /**
@@ -119,16 +118,15 @@ public class OrganizeController {
      * @param info    用户关键信息
      * @param id      组织机构ID
      * @param members 组织机构成员集合
-     * @return Reply
      */
     @PostMapping("/v1.0/organizes/{id}/members")
-    public Reply addOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable Long id, @RequestBody List<Long> members) {
+    public void addOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable Long id, @RequestBody List<Long> members) {
         if (members == null || members.isEmpty()) {
-            return ReplyHelper.invalidParam("请选择需要添加的成员");
+            throw new BusinessException("请选择需要添加的成员");
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.addMembers(loginInfo, id, members);
+        service.addMembers(loginInfo, id, members);
     }
 
     /**
@@ -137,16 +135,15 @@ public class OrganizeController {
      * @param info    用户关键信息
      * @param id      组织机构ID
      * @param members 组织机构成员DTO
-     * @return Reply
      */
     @DeleteMapping("/v1.0/organizes/{id}/members")
-    public Reply removeOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable Long id, @RequestBody List<Long> members) {
+    public void removeOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable Long id, @RequestBody List<Long> members) {
         if (members == null || members.isEmpty()) {
-            return ReplyHelper.invalidParam("请选择需要移除的成员");
+            throw new BusinessException("请选择需要移除的成员");
         }
 
         LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        return service.removeMember(loginInfo, id, members);
+        service.removeMember(loginInfo, id, members);
     }
 
     /**

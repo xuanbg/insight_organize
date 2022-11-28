@@ -4,7 +4,6 @@ import com.insight.base.organize.common.dto.MemberUserDto;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.utils.pojo.base.Search;
-import com.insight.utils.pojo.base.TreeVo;
 import org.apache.ibatis.annotations.*;
 
 import java.util.List;
@@ -35,7 +34,7 @@ public interface OrganizeMapper {
     @Select("with recursive orgs as (select o.id, o.parent_id, o.type, o.code, o.name from ibo_organize o where o.id = #{id} " +
             "union select p.id, p.parent_id, p.type, p.code, p.name from ibo_organize p join orgs s on s.id = p.parent_id) " +
             "select * from orgs;")
-    List<TreeVo> getSubOrganizes(long id);
+    List<OrganizeListDto> getSubOrganizes(long id);
 
     /**
      * 获取组织机构详情

@@ -1,6 +1,7 @@
 package com.insight.base.organize.manage;
 
 import com.insight.base.organize.common.dto.Organize;
+import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
@@ -20,7 +21,7 @@ public interface OrganizeService {
      * @param search 查询实体类
      * @return Reply
      */
-    Reply getOrganizes(Search search);
+    List<OrganizeListDto> getOrganizes(Search search);
 
     /**
      * 获取组织机构详情
@@ -28,7 +29,7 @@ public interface OrganizeService {
      * @param id 组织机构ID
      * @return Reply
      */
-    Reply getOrganize(Long id);
+    Organize getOrganize(Long id);
 
     /**
      * 新增组织机构
@@ -37,25 +38,23 @@ public interface OrganizeService {
      * @param dto  组织机构DTO
      * @return Reply
      */
-    Reply newOrganize(LoginInfo info, Organize dto);
+    Long newOrganize(LoginInfo info, Organize dto);
 
     /**
      * 编辑组织机构
      *
      * @param info 用户关键信息
      * @param dto  组织机构DTO
-     * @return Reply
      */
-    Reply editOrganize(LoginInfo info, Organize dto);
+    void editOrganize(LoginInfo info, Organize dto);
 
     /**
      * 删除组织机构
      *
      * @param info 用户关键信息
      * @param id   组织机构ID
-     * @return Reply
      */
-    Reply deleteOrganize(LoginInfo info, Long id);
+    void deleteOrganize(LoginInfo info, Long id);
 
     /**
      * 查询组织机构成员用户
@@ -72,9 +71,8 @@ public interface OrganizeService {
      * @param info    用户关键信息
      * @param id      组织机构ID
      * @param members 组织机构成员ID集合
-     * @return Reply
      */
-    Reply addMembers(LoginInfo info, Long id, List<Long> members);
+    void addMembers(LoginInfo info, Long id, List<Long> members);
 
     /**
      * 移除组织机构成员
@@ -82,9 +80,8 @@ public interface OrganizeService {
      * @param info    用户关键信息
      * @param id      组织机构ID
      * @param members 组织机构成员ID集合
-     * @return Reply
      */
-    Reply removeMember(LoginInfo info, Long id, List<Long> members);
+    void removeMember(LoginInfo info, Long id, List<Long> members);
 
     /**
      * 获取日志列表

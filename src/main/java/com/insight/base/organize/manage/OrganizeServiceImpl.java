@@ -9,11 +9,11 @@ import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
 import com.insight.utils.ReplyHelper;
 import com.insight.utils.SnowflakeCreator;
-import com.insight.utils.common.BusinessException;
-import com.insight.utils.pojo.OperateType;
 import com.insight.utils.pojo.auth.LoginInfo;
+import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
+import com.insight.utils.pojo.message.OperateType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -53,18 +53,17 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply getOrganizes(Search search) {
+    public List<OrganizeListDto> getOrganizes(Search search) {
         Long id = search.getId();
         if (id != null) {
-            return ReplyHelper.success(mapper.getSubOrganizes(id));
+            return mapper.getSubOrganizes(id);
         } else {
             Long tenantId = search.getTenantId();
             if (tenantId == null) {
                 throw new BusinessException("租户ID不能为空");
             }
 
-            List<OrganizeListDto> organizes = mapper.getOrganizes(tenantId);
-            return ReplyHelper.success(organizes);
+            return mapper.getOrganizes(tenantId);
         }
     }
 
@@ -75,13 +74,13 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply getOrganize(Long id) {
+    public Organize getOrganize(Long id) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
+            throw new BusinessException("ID不存在,未读取数据");
         }
 
-        return ReplyHelper.success(organize);
+        return organize;
     }
 
     /**
@@ -92,7 +91,7 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @return Reply
      */
     @Override
-    public Reply newOrganize(LoginInfo info, Organize dto) {
+    public Long newOrganize(LoginInfo info, Organize dto) {
         Long id = creator.nextId(6);
         dto.setId(id);
         dto.setTenantId(info.getTenantId());
@@ -102,7 +101,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         core.addOrganize(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
 
-        return ReplyHelper.created(id);
+        return id;
     }
 
     /**
@@ -110,20 +109,17 @@ public class OrganizeServiceImpl implements OrganizeService {
      *
      * @param info 用户关键信息
      * @param dto  组织机构DTO
-     * @return Reply
      */
     @Override
-    public Reply editOrganize(LoginInfo info, Organize dto) {
+    public void editOrganize(LoginInfo info, Organize dto) {
         Long id = dto.getId();
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
-            return ReplyHelper.fail("ID不存在,未更新数据");
+            throw new BusinessException("ID不存在,未更新数据");
         }
 
         mapper.updateOrganize(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -131,24 +127,21 @@ public class OrganizeServiceImpl implements OrganizeService {
      *
      * @param info 用户关键信息
      * @param id   组织机构ID
-     * @return Reply
      */
     @Override
-    public Reply deleteOrganize(LoginInfo info, Long id) {
+    public void deleteOrganize(LoginInfo info, Long id) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
-            return ReplyHelper.fail("ID不存在,未删除数据");
+            throw new BusinessException("ID不存在,未删除数据");
         }
 
         int count = mapper.getOrganizeCount(id);
         if (count > 0) {
-            return ReplyHelper.fail("存在下属节点,请先删除下属节点");
+            throw new BusinessException("存在下属节点,请先删除下属节点");
         }
 
         mapper.deleteRole(id);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, organize);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -162,7 +155,7 @@ public class OrganizeServiceImpl implements OrganizeService {
     public Reply getMemberUsers(Long id, Search search) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
-            return ReplyHelper.fail("ID不存在,未读取数据");
+            throw new BusinessException("ID不存在,未读取数据");
         }
 
         search.setId(id);
@@ -179,19 +172,16 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @param info    用户关键信息
      * @param id      组织机构ID
      * @param members 组织机构成员ID集合
-     * @return Reply
      */
     @Override
-    public Reply addMembers(LoginInfo info, Long id, List<Long> members) {
+    public void addMembers(LoginInfo info, Long id, List<Long> members) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
-            return ReplyHelper.fail("ID不存在,未更新数据");
+            throw new BusinessException("ID不存在,未更新数据");
         }
 
         mapper.addMembers(id, members);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, members);
-
-        return ReplyHelper.success();
     }
 
     /**
@@ -200,19 +190,16 @@ public class OrganizeServiceImpl implements OrganizeService {
      * @param info    用户关键信息
      * @param id      组织机构ID
      * @param members 组织机构成员ID集合
-     * @return Reply
      */
     @Override
-    public Reply removeMember(LoginInfo info, Long id, List<Long> members) {
+    public void removeMember(LoginInfo info, Long id, List<Long> members) {
         Organize organize = mapper.getOrganize(id);
         if (organize == null) {
-            return ReplyHelper.fail("ID不存在,未删除数据");
+            throw new BusinessException("ID不存在,未删除数据");
         }
 
         mapper.removeMember(id, members);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, members);
-
-        return ReplyHelper.success();
     }
 
     /**
