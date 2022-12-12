@@ -3,7 +3,6 @@ package com.insight.base.organize.common.dto;
 import com.insight.utils.pojo.base.BaseXo;
 
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.NotNull;
 import java.time.LocalDateTime;
 
 /**
@@ -31,7 +30,6 @@ public class Organize extends BaseXo {
     /**
      * 节点类型:0.机构;1.部门;2.职位
      */
-    @NotNull(message = "类型不能为空")
     private Integer type;
 
     /**

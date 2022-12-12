@@ -2,6 +2,8 @@ package com.insight.base.organize.common.dto;
 
 import com.insight.utils.pojo.base.BaseXo;
 
+import java.time.LocalDateTime;
+
 /**
  * @author 宣炳刚
  * @date 2019/12/5
@@ -35,9 +37,19 @@ public class MemberUserDto extends BaseXo {
     private String mobile;
 
     /**
+     * 用户角色, 多个角色以逗号分割
+     */
+    private String roleName;
+
+    /**
      * 是否失效
      */
     private Boolean isInvalid;
+
+    /**
+     * 创建时间
+     */
+    private LocalDateTime createdTime;
 
     public Long getId() {
         return id;
@@ -79,11 +91,27 @@ public class MemberUserDto extends BaseXo {
         this.mobile = mobile;
     }
 
+    public String getRoleName() {
+        return roleName;
+    }
+
+    public void setRoleName(String roleName) {
+        this.roleName = roleName;
+    }
+
     public Boolean getInvalid() {
         return isInvalid;
     }
 
     public void setInvalid(Boolean invalid) {
         isInvalid = invalid;
+    }
+
+    public LocalDateTime getCreatedTime() {
+        return createdTime;
+    }
+
+    public void setCreatedTime(LocalDateTime createdTime) {
+        this.createdTime = createdTime;
     }
 }
