@@ -77,9 +77,9 @@ public interface OrganizeMapper {
      * @param search 查询关键词
      * @return 组织机构成员用户集合
      */
-    @Select("<script>select u.id, u.code, u.name, u.account, u.mobile, r.role_name, u.is_invalid, u.created_time " +
+    @Select("<script>select u.id, u.code, u.name, u.account, u.mobile, r.role_ids, r.role_name, u.is_invalid, u.created_time " +
             "from ibo_organize_member m join ibu_user u on u.id = m.user_id " +
-            "left join (select m.member_id, group_concat(r.name) as role_name from ibr_role r " +
+            "left join (select m.member_id, group_concat(r.id) as role_ids, group_concat(r.name) as role_name from ibr_role r " +
             "join ibr_role_member m on m.role_id = r.id group by m.member_id) r on r.member_id = u.id " +
             "<if test = 'keyword != null'>and (u.code = #{keyword} or u.account = #{keyword} or u.name like concat('%',#{keyword},'%')) </if>" +
             "where m.post_id = #{id}</script>")
@@ -94,8 +94,7 @@ public interface OrganizeMapper {
     @Insert("<script>insert ibo_organize_member (post_id, user_id) values " +
             "<foreach collection = \"list\" item = \"item\" index = \"index\" separator = \",\">" +
             "(#{id}, #{item})</foreach>;</script>")
-    void
-    addMembers(@Param("id") Long id, @Param("list") List<Long> members);
+    void addMembers(@Param("id") Long id, @Param("list") List<Long> members);
 
     /**
      * 移除组织机构成员

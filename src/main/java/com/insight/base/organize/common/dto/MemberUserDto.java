@@ -37,6 +37,11 @@ public class MemberUserDto extends BaseXo {
     private String mobile;
 
     /**
+     * 用户角色ID, 多个角色ID以逗号分割
+     */
+    private String roleIds;
+
+    /**
      * 用户角色, 多个角色以逗号分割
      */
     private String roleName;
@@ -89,6 +94,14 @@ public class MemberUserDto extends BaseXo {
 
     public void setMobile(String mobile) {
         this.mobile = mobile;
+    }
+
+    public String getRoleIds() {
+        return roleIds;
+    }
+
+    public void setRoleIds(String roleIds) {
+        this.roleIds = roleIds;
     }
 
     public String getRoleName() {
