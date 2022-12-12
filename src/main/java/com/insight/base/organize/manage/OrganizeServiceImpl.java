@@ -118,6 +118,10 @@ public class OrganizeServiceImpl implements OrganizeService {
             throw new BusinessException("ID不存在,未更新数据");
         }
 
+        if(dto.getIndex() == null){
+            dto.setIndex(organize.getIndex());
+        }
+
         mapper.updateOrganize(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
     }
