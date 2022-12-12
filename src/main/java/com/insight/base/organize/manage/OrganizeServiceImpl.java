@@ -118,8 +118,28 @@ public class OrganizeServiceImpl implements OrganizeService {
             throw new BusinessException("ID不存在,未更新数据");
         }
 
+        if (dto.getParentId() == null){
+            dto.setParentId(organize.getParentId());
+        }
+
+        if (dto.getType() == null){
+            dto.setType(organize.getType());
+        }
+
         if(dto.getIndex() == null){
             dto.setIndex(organize.getIndex());
+        }
+
+        if (dto.getAlias() == null){
+            dto.setAlias(organize.getAlias());
+        }
+
+        if (dto.getFullName() == null){
+            dto.setFullName(organize.getFullName());
+        }
+
+        if(dto.getRemark() == null){
+            dto.setRemark(organize.getRemark());
         }
 
         mapper.updateOrganize(dto);
