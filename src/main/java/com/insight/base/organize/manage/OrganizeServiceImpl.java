@@ -92,7 +92,34 @@ public class OrganizeServiceImpl implements OrganizeService {
      */
     @Override
     public Long newOrganize(LoginInfo info, Organize dto) {
-        Long id = creator.nextId(6);
+        if (dto.getType() == null) {
+            dto.setType(0);
+        }
+
+        if (dto.getType() > 2) {
+            throw new BusinessException("非法的组织机构类型");
+        }
+
+        var id = creator.nextId(6);
+        var parentId = dto.getParentId();
+        if (parentId != null) {
+            Organize organize = mapper.getOrganize(parentId);
+            if (organize == null) {
+                throw new BusinessException("不存在的上级机构或部门");
+            }
+
+            var type = organize.getType();
+            if (type == 2) {
+                throw new BusinessException("职位节点不能新建下级");
+            } else if (type == 0 && dto.getType() == 2) {
+                throw new BusinessException("职位只能从属于部门");
+            } else if (type > dto.getType()) {
+                throw new BusinessException("非法的组织机构类型");
+            }
+        } else {
+            dto.setType(0);
+        }
+
         dto.setId(id);
         dto.setTenantId(info.getTenantId());
         dto.setCreator(info.getUserName());
@@ -118,27 +145,27 @@ public class OrganizeServiceImpl implements OrganizeService {
             throw new BusinessException("ID不存在,未更新数据");
         }
 
-        if (dto.getParentId() == null){
+        if (dto.getParentId() == null) {
             dto.setParentId(organize.getParentId());
         }
 
-        if (dto.getType() == null){
+        if (dto.getType() == null) {
             dto.setType(organize.getType());
         }
 
-        if(dto.getIndex() == null){
+        if (dto.getIndex() == null) {
             dto.setIndex(organize.getIndex());
         }
 
-        if (dto.getAlias() == null){
+        if (dto.getAlias() == null) {
             dto.setAlias(organize.getAlias());
         }
 
-        if (dto.getFullName() == null){
+        if (dto.getFullName() == null) {
             dto.setFullName(organize.getFullName());
         }
 
-        if(dto.getRemark() == null){
+        if (dto.getRemark() == null) {
             dto.setRemark(organize.getRemark());
         }
 
