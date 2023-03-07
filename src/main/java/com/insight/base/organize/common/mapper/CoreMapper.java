@@ -17,7 +17,7 @@ public interface CoreMapper {
      *
      * @param organize 组织机构DTO
      */
-    @Insert("insert ibo_organize(id, tenant_id, parent_id, type, `index`, code, `name`, alias, full_name, remark, is_invalid, creator, creator_id, created_time) values " +
-            "(#{id}, #{tenantId}, #{parentId}, #{type}, #{index}, #{code}, #{name}, #{alias}, #{fullName}, #{remark}, #{isInvalid}, #{creator}, #{creatorId}, #{createdTime});")
+    @Insert("insert ibo_organize(id, tenant_id, parent_id, type, `index`, code, `name`, alias, full_name, remark, invalid, creator, creator_id, created_time) values " +
+            "(#{id}, #{tenantId}, #{parentId}, #{type}, #{index}, #{code}, #{name}, #{alias}, #{fullName}, #{remark}, #{invalid}, #{creator}, #{creatorId}, #{createdTime});")
     void addOrganize(Organize organize);
 }
