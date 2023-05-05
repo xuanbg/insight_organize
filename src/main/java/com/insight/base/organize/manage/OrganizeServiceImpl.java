@@ -122,8 +122,8 @@ public class OrganizeServiceImpl implements OrganizeService {
 
         dto.setId(id);
         dto.setTenantId(info.getTenantId());
-        dto.setCreator(info.getUserName());
-        dto.setCreatorId(info.getUserId());
+        dto.setCreator(info.getName());
+        dto.setCreatorId(info.getId());
 
         core.addOrganize(dto);
         LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
@@ -210,11 +210,11 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         search.setId(id);
-        var page = PageHelper.startPage(search.getPageNum(), search.getPageSize())
-                .setOrderBy(search.getOrderBy()).doSelectPage(() -> mapper.getMemberUsers(search));
-
-        var total = page.getTotal();
-        return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
+        try (var page = PageHelper.startPage(search.getPageNum(), search.getPageSize()).setOrderBy(search.getOrderBy())
+                .doSelectPage(() -> mapper.getMemberUsers(search))) {
+            var total = page.getTotal();
+            return total > 0 ? ReplyHelper.success(page.getResult(), total) : ReplyHelper.resultIsEmpty();
+        }
     }
 
     /**
