@@ -3,7 +3,6 @@ package com.insight.base.organize.manage;
 import com.github.pagehelper.PageHelper;
 import com.insight.base.organize.common.Core;
 import com.insight.base.organize.common.client.LogClient;
-import com.insight.base.organize.common.client.LogServiceClient;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
@@ -25,10 +24,9 @@ import java.util.List;
  */
 @Service
 public class OrganizeServiceImpl implements OrganizeService {
-    private static final String BUSINESS = "组织机构管理";
+    private static final String BUSINESS = "Organize";
     private final SnowflakeCreator creator;
     private final OrganizeMapper mapper;
-    private final LogServiceClient client;
     private final Core core;
 
     /**
@@ -36,13 +34,11 @@ public class OrganizeServiceImpl implements OrganizeService {
      *
      * @param creator 雪花算法ID生成器
      * @param mapper  RoleMapper
-     * @param client  LogServiceClient
      * @param core    Core
      */
-    public OrganizeServiceImpl(SnowflakeCreator creator, OrganizeMapper mapper, LogServiceClient client, Core core) {
+    public OrganizeServiceImpl(SnowflakeCreator creator, OrganizeMapper mapper, Core core) {
         this.creator = creator;
         this.mapper = mapper;
-        this.client = client;
         this.core = core;
     }
 
@@ -251,27 +247,5 @@ public class OrganizeServiceImpl implements OrganizeService {
 
         mapper.removeMember(id, members);
         LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, members);
-    }
-
-    /**
-     * 获取日志列表
-     *
-     * @param search 查询实体类
-     * @return Reply
-     */
-    @Override
-    public Reply getOrganizeLogs(Search search) {
-        return client.getLogs(BUSINESS, search.getKeyword(), search.getPageNum(), search.getPageSize());
-    }
-
-    /**
-     * 获取日志详情
-     *
-     * @param id 日志ID
-     * @return Reply
-     */
-    @Override
-    public Reply getOrganizeLog(Long id) {
-        return client.getLog(id);
     }
 }

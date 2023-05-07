@@ -82,20 +82,4 @@ public interface OrganizeService {
      * @param members 组织机构成员ID集合
      */
     void removeMember(LoginInfo info, Long id, List<Long> members);
-
-    /**
-     * 获取日志列表
-     *
-     * @param search 查询实体类
-     * @return Reply
-     */
-    Reply getOrganizeLogs(Search search);
-
-    /**
-     * 获取日志详情
-     *
-     * @param id 日志ID
-     * @return Reply
-     */
-    Reply getOrganizeLog(Long id);
 }
