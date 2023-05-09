@@ -122,7 +122,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         dto.setCreatorId(info.getId());
 
         core.addOrganize(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.NEW, id, dto);
 
         return id;
     }
@@ -166,7 +166,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.updateOrganize(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.UPDATE, id, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, dto);
     }
 
     /**
@@ -228,7 +228,7 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.addMembers(id, members);
-        LogClient.writeLog(info, BUSINESS, OperateType.INSERT, id, members);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, members);
     }
 
     /**
