@@ -1,6 +1,8 @@
 package com.insight.base.organize.manage;
 
+import com.insight.base.organize.common.client.LogClient;
 import com.insight.base.organize.common.client.LogServiceClient;
+import com.insight.base.organize.common.dto.OperateType;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.utils.Json;
@@ -22,6 +24,7 @@ import java.util.List;
 @RestController
 @RequestMapping("/base/organize")
 public class OrganizeController {
+    private static final String BUSINESS = "Organize";
     private final LogServiceClient client;
     private final OrganizeService service;
 
@@ -39,14 +42,14 @@ public class OrganizeController {
     /**
      * 查询组织机构列表
      *
-     * @param info   用户关键信息
+     * @param loginInfo   用户关键信息
      * @param search 查询实体类
      * @return Reply
      */
     @GetMapping("/v1.0/organizes")
-    public List<OrganizeListDto> getOrganizes(@RequestHeader("loginInfo") String info, Search search) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        search.setTenantId(loginInfo.getTenantId());
+    public List<OrganizeListDto> getOrganizes(@RequestHeader("loginInfo") String loginInfo, Search search) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        search.setTenantId(info.getTenantId());
 
         return service.getOrganizes(search);
     }
@@ -65,43 +68,47 @@ public class OrganizeController {
     /**
      * 新增组织机构
      *
-     * @param info 用户关键信息
+     * @param loginInfo 用户关键信息
      * @param dto  组织机构DTO
      * @return Reply
      */
     @PostMapping("/v1.0/organizes")
-    public Long newOrganize(@RequestHeader("loginInfo") String info, @Valid @RequestBody Organize dto) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+    public Long newOrganize(@RequestHeader("loginInfo") String loginInfo, @Valid @RequestBody Organize dto) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
 
-        return service.newOrganize(loginInfo, dto);
+        var id = service.newOrganize(info, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.NEW, id, dto);
+        return id;
     }
 
     /**
      * 编辑组织机构
      *
-     * @param info 用户关键信息
+     * @param loginInfo 用户关键信息
      * @param id   组织机构ID
      * @param dto  组织机构DTO
      */
     @PutMapping("/v1.0/organizes/{id}")
-    public void editOrganize(@RequestHeader("loginInfo") String info, @PathVariable Long id, @Valid @RequestBody Organize dto) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+    public void editOrganize(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id, @Valid @RequestBody Organize dto) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
         dto.setId(id);
 
-        service.editOrganize(loginInfo, dto);
+        service.editOrganize(info, dto);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, dto);
     }
 
     /**
      * 删除组织机构
      *
-     * @param info 用户关键信息
+     * @param loginInfo 用户关键信息
      * @param id   组织机构ID
      */
     @DeleteMapping("/v1.0/organizes/{id}")
-    public void deleteOrganize(@RequestHeader("loginInfo") String info, @PathVariable Long id) {
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
+    public void deleteOrganize(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id) {
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
 
-        service.deleteOrganize(loginInfo, id);
+        service.deleteOrganize(info, id);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, null);
     }
 
     /**
@@ -119,35 +126,37 @@ public class OrganizeController {
     /**
      * 添加组织机构成员
      *
-     * @param info    用户关键信息
+     * @param loginInfo    用户关键信息
      * @param id      组织机构ID
      * @param members 组织机构成员集合
      */
     @PostMapping("/v1.0/organizes/{id}/members")
-    public void addOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable Long id, @RequestBody List<Long> members) {
+    public void addOrganizeMembers(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id, @RequestBody List<Long> members) {
         if (members == null || members.isEmpty()) {
             throw new BusinessException("请选择需要添加的成员");
         }
 
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        service.addMembers(loginInfo, id, members);
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        service.addMembers(info, id, members);
+        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, members);
     }
 
     /**
      * 移除组织机构成员
      *
-     * @param info    用户关键信息
+     * @param loginInfo    用户关键信息
      * @param id      组织机构ID
      * @param members 组织机构成员DTO
      */
     @DeleteMapping("/v1.0/organizes/{id}/members")
-    public void removeOrganizeMembers(@RequestHeader("loginInfo") String info, @PathVariable Long id, @RequestBody List<Long> members) {
+    public void removeOrganizeMembers(@RequestHeader("loginInfo") String loginInfo, @PathVariable Long id, @RequestBody List<Long> members) {
         if (members == null || members.isEmpty()) {
             throw new BusinessException("请选择需要移除的成员");
         }
 
-        LoginInfo loginInfo = Json.toBeanFromBase64(info, LoginInfo.class);
-        service.removeMember(loginInfo, id, members);
+        LoginInfo info = Json.toBeanFromBase64(loginInfo, LoginInfo.class);
+        service.removeMember(info, id, members);
+        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, members);
     }
 
     /**

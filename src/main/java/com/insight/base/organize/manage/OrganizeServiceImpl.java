@@ -2,7 +2,6 @@ package com.insight.base.organize.manage;
 
 import com.github.pagehelper.PageHelper;
 import com.insight.base.organize.common.Core;
-import com.insight.base.organize.common.client.LogClient;
 import com.insight.base.organize.common.dto.Organize;
 import com.insight.base.organize.common.dto.OrganizeListDto;
 import com.insight.base.organize.common.mapper.OrganizeMapper;
@@ -12,7 +11,6 @@ import com.insight.utils.pojo.auth.LoginInfo;
 import com.insight.utils.pojo.base.BusinessException;
 import com.insight.utils.pojo.base.Reply;
 import com.insight.utils.pojo.base.Search;
-import com.insight.utils.pojo.message.OperateType;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -24,7 +22,6 @@ import java.util.List;
  */
 @Service
 public class OrganizeServiceImpl implements OrganizeService {
-    private static final String BUSINESS = "Organize";
     private final SnowflakeCreator creator;
     private final OrganizeMapper mapper;
     private final Core core;
@@ -122,8 +119,6 @@ public class OrganizeServiceImpl implements OrganizeService {
         dto.setCreatorId(info.getId());
 
         core.addOrganize(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.NEW, id, dto);
-
         return id;
     }
 
@@ -166,7 +161,6 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.updateOrganize(dto);
-        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, dto);
     }
 
     /**
@@ -188,7 +182,6 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.deleteRole(id);
-        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, organize);
     }
 
     /**
@@ -228,7 +221,6 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.addMembers(id, members);
-        LogClient.writeLog(info, BUSINESS, OperateType.EDIT, id, members);
     }
 
     /**
@@ -246,6 +238,5 @@ public class OrganizeServiceImpl implements OrganizeService {
         }
 
         mapper.removeMember(id, members);
-        LogClient.writeLog(info, BUSINESS, OperateType.DELETE, id, members);
     }
 }
